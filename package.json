@@ -1,6 +1,6 @@
 {
   "name": "@edools/epm",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Edools apps management tool",
   "repository": "https://github.com/Edools/epm.git",
   "main": "dist/index.js",
