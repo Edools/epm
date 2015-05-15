@@ -1,18 +1,18 @@
-import Release from '../../../src/lib/release';
-import config from '../../mocks/config';
+import Release from '../../../../src/apps/lib/release';
+import { appConfig } from '../../../mocks/config';
 
 describe('Release', () => {
   var release;
   beforeEach(() => {
-    release = new Release(config);
+    release = new Release(appConfig);
   });
 
   it('should be ok', () => {
     expect(release).to.be.ok;
-    expect(release.app).to.equal(config.app);
-    expect(release.version).to.equal(config.manifest.version);
-    expect(release.dependencies).to.equal(config.manifest.dependencies);
-    expect(release.routes).to.equal(config.manifest.routes);
+    expect(release.app).to.equal(appConfig.app);
+    expect(release.version).to.equal(appConfig.manifest.version);
+    expect(release.dependencies).to.equal(appConfig.manifest.dependencies);
+    expect(release.routes).to.equal(appConfig.manifest.routes);
   });
 
   it('should verify if it already exists', (done) => {

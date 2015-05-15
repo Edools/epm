@@ -1,5 +1,4 @@
-
-export default {
+let appConfig = {
   app: 'home',
   token: process.env.RELEASE_TOKEN,
   s3Options: {
@@ -16,3 +15,13 @@ export default {
     }]
   }
 };
+
+let themeConfig = {
+  dependencies: {
+    home: '0.8.0-beta.49',
+    ecommerce: '0.8.0-beta.49'
+  },
+  token: process.env.RELEASE_TOKEN
+};
+
+export { appConfig, themeConfig };

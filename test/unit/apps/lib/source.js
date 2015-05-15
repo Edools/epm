@@ -1,6 +1,6 @@
-import { Source, Release } from '../../../src/lib';
-import config from '../../mocks/config';
-import s3ClientMock from '../../mocks/s3Client';
+import { Source, Release } from '../../../../src/apps/lib';
+import { appConfig } from '../../../mocks/config';
+import s3ClientMock from '../../../mocks/s3Client';
 import File from 'vinyl';
 
 describe('Source', () => {
@@ -13,8 +13,8 @@ describe('Source', () => {
       contents: new Buffer('var a = "b";')
     });
 
-    release = new Release(config);
-    source = new Source(file, release, config);
+    release = new Release(appConfig);
+    source = new Source(file, release, appConfig);
     source.client = s3ClientMock;
   });
 

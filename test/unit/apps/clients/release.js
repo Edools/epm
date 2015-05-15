@@ -1,10 +1,10 @@
-import ReleaseClient from '../../../src/clients/release';
-import config from '../../mocks/config';
+import { ReleaseClient } from '../../../../src/clients';
+import { appConfig } from '../../../mocks/config';
 
 describe('ReleaseClient', () => {
   var client, release;
   beforeEach(() => {
-    client = new ReleaseClient(config);
+    client = new ReleaseClient(appConfig);
     release = {
       app: 'home',
       version: '99.0.0',

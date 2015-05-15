@@ -75,6 +75,28 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     return rest.wrap(mime).wrap(pathPrefix, { prefix: 'https://api.myedools.com' }).wrap(defaultRequest, { headers: getDefaultHeaders(config) }).wrap(errorCode, { code: 400 }).wrap(errorCode, { code: 404 }).wrap(errorCode, { code: 500 });
   }
 
+  var ThemeClient = (function () {
+    function ThemeClient(config) {
+      _classCallCheck(this, ThemeClient);
+
+      this.client = restClient(config);
+    }
+
+    _createClass(ThemeClient, [{
+      key: 'update',
+      value: function update(theme) {
+        return this.client({
+          method: 'PUT',
+          path: '/themes/' + theme.id,
+          entity: { theme: theme },
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    }]);
+
+    return ThemeClient;
+  })();
+
   var ReleaseClient = (function () {
     function ReleaseClient(config) {
       _classCallCheck(this, ReleaseClient);
@@ -197,6 +219,112 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     });
   }
 
-  exports.stream = edoolsApps;
+  exports.AppStream = edoolsApps;
+
+  var Theme = (function () {
+    function Theme(config) {
+      _classCallCheck(this, Theme);
+
+      this.id = config.id;
+      this.package_url = config.package_url;
+      this.client = new ThemeClient(config);
+    }
+
+    _createClass(Theme, [{
+      key: 'deploy',
+      value: function deploy(dependencies) {
+        this.dependencies = dependencies;
+        return this.client.update(this);
+      }
+    }]);
+
+    return Theme;
+  })();
+
+  var DepsResolver = (function () {
+    function DepsResolver(config) {
+      _classCallCheck(this, DepsResolver);
+
+      this.releaseClient = new ReleaseClient(config);
+    }
+
+    _createClass(DepsResolver, [{
+      key: 'resolve',
+      value: function resolve(dependencies) {
+        var _this2 = this;
+
+        return this.getDeps(dependencies).then(function (deps) {
+          return _this2.format(deps);
+        });
+      }
+    }, {
+      key: 'getDeps',
+      value: function getDeps(dependencies) {
+        var _this3 = this;
+
+        return Q.all(R.map(function (dep) {
+          return _this3.releaseClient.getOne(dep).then(function (res) {
+            return res.entity;
+          });
+        }, this.depsToArray(dependencies)));
+      }
+    }, {
+      key: 'depsToArray',
+      value: function depsToArray(dependencies) {
+        return R.map(function (key) {
+          return { app: key, version: dependencies[key] };
+        }, R.keys(dependencies));
+      }
+    }, {
+      key: 'format',
+      value: function format(dependencies) {
+        dependencies = R.concat(dependencies, this.getSubDeps(dependencies));
+
+        return R.reduce(function (acc, dep) {
+          acc[dep.app || dep.name] = dep.version;
+          return acc;
+        }, {}, dependencies);
+      }
+    }, {
+      key: 'getSubDeps',
+      value: function getSubDeps(dependencies) {
+        var _this4 = this;
+
+        var subDeps = R.reduce(function (acc, dep) {
+          return R.concat(acc, _this4.depsToArray(dep.dependencies));
+        }, [], dependencies);
+
+        return R.dropRepeatsWith(function (dep1, dep2) {
+          return dep1.app === dep2.app;
+        }, subDeps);
+      }
+    }]);
+
+    return DepsResolver;
+  })();
+
+  var ThemeHandler = (function () {
+    function ThemeHandler() {
+      _classCallCheck(this, ThemeHandler);
+    }
+
+    _createClass(ThemeHandler, null, [{
+      key: 'deploy',
+      value: function deploy(config) {
+        var theme = new Theme(config),
+            depsResolver = new DepsResolver(config);
+
+        return depsResolver.resolve(config.dependencies).then(function (dependencies) {
+          return theme.deploy(dependencies);
+        })['catch'](function (err) {
+          throw err;
+        });
+      }
+    }]);
+
+    return ThemeHandler;
+  })();
+
+  exports.ThemeHandler = ThemeHandler;
 });
 //# sourceMappingURL=./index.js.map

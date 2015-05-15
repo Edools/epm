@@ -1,4 +1,4 @@
-import ReleaseClient from '../clients/release';
+import { ReleaseClient } from '../../clients';
 import Q from 'q';
 
 class Release {
