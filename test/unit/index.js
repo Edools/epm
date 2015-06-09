@@ -1,4 +1,4 @@
-import { AppHandler, stream } from '../../src/index';
+import { AppHandler, AppStream } from '../../src/index';
 
 describe('Index', () => {
   describe('AppHandler', () => {
@@ -9,8 +9,8 @@ describe('Index', () => {
 
   describe('stream', () => {
     it('should be ok', () => {
-      expect(stream).to.be.ok;
-      expect(stream).to.be.a('function');
+      expect(AppStream).to.be.ok;
+      expect(AppStream).to.be.a('function');
     });
   });
 });

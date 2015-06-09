@@ -1,6 +1,6 @@
 {
   "name": "@edools/epm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Edools apps management tool",
   "repository": "https://github.com/Edools/epm.git",
   "main": "dist/index.js",
@@ -20,7 +20,7 @@
     "chai": "^2.3.0",
     "chai-as-promised": "^5.0.0",
     "esperanto": "^0.7.0",
-    "gulp": "^3.8.11",
+    "gulp": "^3.9.0",
     "gulp-babel": "^5.1.0",
     "gulp-eslint": "^0.12.0",
     "gulp-file": "^0.2.0",

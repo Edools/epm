@@ -23,7 +23,7 @@ describe('Source', () => {
   });
 
   it('should mount the s3 remote url', () => {
-    expect(source.remoteKey).to.equal('edools-school/home/10.10.0/home.min.js');
+    expect(source.remoteKey).to.equal('libs/edools-school/home/10.10.0/home.min.js');
   });
 
   it('should upload a file', (done) => {

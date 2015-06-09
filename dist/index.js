@@ -29,7 +29,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     _createClass(Source, [{
       key: 'remoteKey',
       get: function () {
-        return 'edools-school/' + this.release.app + '/' + this.release.version + '/' + this.file.relative;
+        return 'libs/edools-school/' + this.release.app + '/' + this.release.version + '/' + this.file.relative;
       }
     }, {
       key: 'createS3Client',
