@@ -33,7 +33,10 @@ gulp.task('build', ['lint:src'], function (done) {
     $.file(exportFileName, res.code, { src: true })
       .pipe($.plumber())
       .pipe($.sourcemaps.init({ loadMaps: true }))
-      .pipe($.babel({ blacklist: ['useStrict'] }))
+      .pipe($.babel({
+        blacklist: ['useStrict'],
+        optional: ['runtime']
+      }))
       .pipe($.sourcemaps.write('./', { addComment: false }))
       .pipe(gulp.dest('dist/'))
       .on('end', done);

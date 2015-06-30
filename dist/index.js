@@ -1,6 +1,8 @@
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+
+var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('s3'), require('q'), require('rest'), require('rest/interceptor/pathPrefix'), require('rest/interceptor/mime'), require('rest/interceptor/defaultRequest'), require('rest/interceptor/errorCode'), require('ramda'), require('through2')) : typeof define === 'function' && define.amd ? define(['exports', 's3', 'q', 'rest', 'rest/interceptor/pathPrefix', 'rest/interceptor/mime', 'rest/interceptor/defaultRequest', 'rest/interceptor/errorCode', 'ramda', 'through2'], factory) : factory(global.index.js = {}, global.s3, global.Q, global.rest, global.pathPrefix, global.mime, global.defaultRequest, global.errorCode, global.R, global.through);
@@ -29,7 +31,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     _createClass(Source, [{
       key: 'remoteKey',
       get: function () {
-        return 'libs/edools-school/' + this.release.app + '/' + this.release.version + '/' + this.file.relative;
+        var release = this.release;
+        return 'libs/edools-school/' + release.app + '/' + release.version + '/' + this.file.relative;
       }
     }, {
       key: 'createS3Client',
@@ -151,7 +154,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     function Release(config) {
       _classCallCheck(this, Release);
 
-      this.release = R.merge({ app: config.app }, config.manifest);
+      _Object$assign(this, { app: config.app });
+      _Object$assign(this, config.manifest);
       this.client = new ReleaseClient(config);
     }
 
@@ -161,9 +165,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var _this = this;
 
         return this.exists().then(function () {
-          return _this.client.update(_this.release);
+          return _this.client.update(_this.instance);
         })['catch'](function () {
-          return _this.client.create(_this.release);
+          return _this.client.create(_this.instance);
         });
       }
     }, {
@@ -171,7 +175,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function exists() {
         var deferred = Q.defer();
 
-        this.client.getOne(this.release).then(deferred.resolve)['catch'](deferred.reject);
+        this.client.getOne(this.instance).then(deferred.resolve)['catch'](deferred.reject);
 
         return deferred.promise;
       }
@@ -297,7 +301,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         subDeps = R.filter(function (subDep) {
           return !R.contains(subDep.app, R.map(R.prop('name'), dependencies));
         }, subDeps);
-        console.log(subDeps);
         return subDeps;
       }
     }]);
