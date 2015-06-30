@@ -151,10 +151,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     function Release(config) {
       _classCallCheck(this, Release);
 
-      this.app = config.app;
-      this.version = config.manifest.version;
-      this.dependencies = config.manifest.dependencies;
-      this.routes = config.manifest.routes;
+      this.release = R.merge({ app: config.app }, config.manifest);
       this.client = new ReleaseClient(config);
     }
 
@@ -164,9 +161,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var _this = this;
 
         return this.exists().then(function () {
-          return _this.client.update(_this);
+          return _this.client.update(_this.release);
         })['catch'](function () {
-          return _this.client.create(_this);
+          return _this.client.create(_this.release);
         });
       }
     }, {
@@ -174,7 +171,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function exists() {
         var deferred = Q.defer();
 
-        this.client.getOne(this).then(deferred.resolve)['catch'](deferred.reject);
+        this.client.getOne(this.release).then(deferred.resolve)['catch'](deferred.reject);
 
         return deferred.promise;
       }
