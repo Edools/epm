@@ -291,9 +291,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           return R.concat(acc, _this4.depsToArray(dep.dependencies));
         }, [], dependencies);
 
-        return R.dropRepeatsWith(function (dep1, dep2) {
+        subDeps = R.uniqWith(function (dep1, dep2) {
           return dep1.app === dep2.app;
         }, subDeps);
+        subDeps = R.filter(function (subDep) {
+          return !R.contains(subDep.app, R.map(R.prop('name'), dependencies));
+        }, subDeps);
+        console.log(subDeps);
+        return subDeps;
       }
     }]);
 

@@ -43,7 +43,9 @@ class DepsResolver {
       return R.concat(acc, this.depsToArray(dep.dependencies));
     }, [], dependencies);
 
-    return R.dropRepeatsWith((dep1, dep2) => dep1.app === dep2.app, subDeps);
+    subDeps = R.uniqWith((dep1, dep2) => dep1.app === dep2.app, subDeps);
+    subDeps = R.filter(subDep => !R.contains(subDep.app, R.map(R.prop('name'), dependencies)), subDeps);
+    return subDeps;
   }
 }
 

@@ -1,7 +1,7 @@
 import DepsResolver from '../../../../src/themes/lib/dependencies';
 import { themeConfig } from '../../../mocks/config';
 
-describe('Dependencies', () => {
+describe('Dependencies resolver', () => {
   var dependencies, arrayDeps, depsResolver;
   beforeEach(() => {
     dependencies = {
@@ -10,13 +10,13 @@ describe('Dependencies', () => {
     };
 
     arrayDeps = [{
-      app: 'home',
+      name: 'home',
       version: '0.8.0-beta.49',
       dependencies: {
         auth: '0.8.0'
       }
     }, {
-      app: 'ecommerce',
+      name: 'ecommerce',
       version: '0.8.0-beta.49',
       dependencies: {
         auth: '0.8.0'
@@ -58,5 +58,12 @@ describe('Dependencies', () => {
 
   it('should get all sub dependencies from dependencies array', () => {
     expect(depsResolver.getSubDeps(arrayDeps)).to.deep.equal([{ app: 'auth', version: '0.8.0' }]);
+  });
+
+  it('should prefer a root dependency over the same sub dependency', () => {
+    arrayDeps.push({ name: 'auth', version: '0.8.1' });
+    let subDeps = depsResolver.getSubDeps(arrayDeps);
+    expect(subDeps).to.be.an('array');
+    expect(subDeps.length).to.equal(0);
   });
 });

@@ -10,7 +10,8 @@ class Source {
   }
 
   get remoteKey () {
-    return `libs/edools-school/${this.release.app}/${this.release.version}/${this.file.relative}`;
+    let release = this.release;
+    return `libs/edools-school/${release.app}/${release.version}/${this.file.relative}`;
   }
 
   createS3Client (config) {

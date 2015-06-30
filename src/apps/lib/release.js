@@ -1,23 +1,23 @@
 import { ReleaseClient } from '../../clients';
 import Q from 'q';
-import R from 'ramda';
 
 class Release {
   constructor (config) {
-    this.release      = R.merge({ app: config.app }, config.manifest);
+    Object.assign(this, { app: config.app });
+    Object.assign(this, config.manifest);
     this.client       = new ReleaseClient(config);
   }
 
   save () {
     return this.exists()
-      .then(() => this.client.update(this.release))
-      .catch(() => this.client.create(this.release));
+      .then(() => this.client.update(this.instance))
+      .catch(() => this.client.create(this.instance));
   }
 
   exists () {
     var deferred = Q.defer();
 
-    this.client.getOne(this.release)
+    this.client.getOne(this.instance)
       .then(deferred.resolve)
       .catch(deferred.reject);
 

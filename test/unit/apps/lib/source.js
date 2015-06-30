@@ -3,7 +3,7 @@ import { appConfig } from '../../../mocks/config';
 import s3ClientMock from '../../../mocks/s3Client';
 import File from 'vinyl';
 
-describe('Source', () => {
+describe('Source uploader', () => {
   var source, release, file;
   beforeEach(() => {
     file = new File({
