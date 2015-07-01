@@ -165,9 +165,9 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
         var _this = this;
 
         return this.exists().then(function () {
-          return _this.client.update(_this.instance);
+          return _this.client.update(_this);
         })['catch'](function () {
-          return _this.client.create(_this.instance);
+          return _this.client.create(_this);
         });
       }
     }, {
@@ -175,7 +175,7 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
       value: function exists() {
         var deferred = Q.defer();
 
-        this.client.getOne(this.instance).then(deferred.resolve)['catch'](deferred.reject);
+        this.client.getOne(this).then(deferred.resolve)['catch'](deferred.reject);
 
         return deferred.promise;
       }

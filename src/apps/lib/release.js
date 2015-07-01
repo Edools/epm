@@ -10,14 +10,14 @@ class Release {
 
   save () {
     return this.exists()
-      .then(() => this.client.update(this.instance))
-      .catch(() => this.client.create(this.instance));
+      .then(() => this.client.update(this))
+      .catch(() => this.client.create(this));
   }
 
   exists () {
     var deferred = Q.defer();
 
-    this.client.getOne(this.instance)
+    this.client.getOne(this)
       .then(deferred.resolve)
       .catch(deferred.reject);
 
