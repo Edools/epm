@@ -1,20 +1,15 @@
 import { ThemeClient } from '../../clients';
-import R from 'ramda';
 
 class Theme {
   constructor (config) {
     this.id = config.id;
     this.package_url = config.package_url;
     this.client = new ThemeClient(config);
+    this.schooljs_version = config.dependencies.schooljs_version;
   }
 
   deploy (dependencies) {
-    let schooljs = R.find(R.propEq('app', 'schooljs_version'), dependencies);
-    if(schooljs !== undefined) {
-      this.schooljs_version = schooljs.version;
-    }
-    this.dependencies = dependencies.filter(dep => dep.app !== 'schooljs_version');
-
+    this.dependencies = dependencies;
     return this.client.update(this);
   }
 }

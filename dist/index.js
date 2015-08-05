@@ -229,19 +229,13 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
       this.id = config.id;
       this.package_url = config.package_url;
       this.client = new ThemeClient(config);
+      this.schooljs_version = config.dependencies.schooljs_version;
     }
 
     _createClass(Theme, [{
       key: 'deploy',
       value: function deploy(dependencies) {
-        var schooljs = R.find(R.propEq('app', 'schooljs_version'), dependencies);
-        if (schooljs !== undefined) {
-          this.schooljs_version = schooljs.version;
-        }
-        this.dependencies = dependencies.filter(function (dep) {
-          return dep.app !== 'schooljs_version';
-        });
-
+        this.dependencies = dependencies;
         return this.client.update(this);
       }
     }]);
@@ -270,11 +264,15 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
       value: function getDeps(dependencies) {
         var _this3 = this;
 
+        dependencies = this.depsToArray(dependencies).filter(function (dep) {
+          return dep.app !== 'schooljs_version';
+        });
+
         return Q.all(R.map(function (dep) {
           return _this3.releaseClient.getOne(dep).then(function (res) {
             return res.entity;
           });
-        }, this.depsToArray(dependencies)));
+        }, dependencies));
       }
     }, {
       key: 'depsToArray',

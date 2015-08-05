@@ -17,10 +17,13 @@ class DepsResolver {
   }
 
   getDeps (dependencies) {
+    dependencies = this.depsToArray(dependencies)
+      .filter(dep => dep.app !== 'schooljs_version');
+
     return Q.all(R.map(dep => {
       return this.releaseClient.getOne(dep)
         .then(res => res.entity);
-    }, this.depsToArray(dependencies)));
+    }, dependencies));
   }
 
   depsToArray (dependencies) {
