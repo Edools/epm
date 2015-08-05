@@ -229,7 +229,7 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
       this.id = config.id;
       this.package_url = config.package_url;
       this.client = new ThemeClient(config);
-      this.schooljs_version = config.dependencies.schooljs_version;
+      this.schooljs_version = config.dependencies.bamboo;
     }
 
     _createClass(Theme, [{
@@ -265,7 +265,7 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
         var _this3 = this;
 
         dependencies = this.depsToArray(dependencies).filter(function (dep) {
-          return dep.app !== 'schooljs_version';
+          return dep.app !== 'bamboo';
         });
 
         return Q.all(R.map(function (dep) {

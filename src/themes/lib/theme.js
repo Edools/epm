@@ -5,7 +5,7 @@ class Theme {
     this.id = config.id;
     this.package_url = config.package_url;
     this.client = new ThemeClient(config);
-    this.schooljs_version = config.dependencies.schooljs_version;
+    this.schooljs_version = config.dependencies.bamboo;
   }
 
   deploy (dependencies) {

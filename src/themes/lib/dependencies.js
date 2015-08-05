@@ -18,7 +18,7 @@ class DepsResolver {
 
   getDeps (dependencies) {
     dependencies = this.depsToArray(dependencies)
-      .filter(dep => dep.app !== 'schooljs_version');
+      .filter(dep => dep.app !== 'bamboo');
 
     return Q.all(R.map(dep => {
       return this.releaseClient.getOne(dep)
