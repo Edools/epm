@@ -234,7 +234,14 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
     _createClass(Theme, [{
       key: 'deploy',
       value: function deploy(dependencies) {
-        this.dependencies = dependencies;
+        var schooljs = R.find(R.propEq('app', 'schooljs_version'), dependencies);
+        if (schooljs !== undefined) {
+          this.schooljs_version = schooljs.version;
+        }
+        this.dependencies = dependencies.filter(function (dep) {
+          return dep.app !== 'schooljs_version';
+        });
+
         return this.client.update(this);
       }
     }]);
