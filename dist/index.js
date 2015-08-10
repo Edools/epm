@@ -2,11 +2,13 @@ var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
+var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
+
 var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('s3'), require('q'), require('rest'), require('rest/interceptor/pathPrefix'), require('rest/interceptor/mime'), require('rest/interceptor/defaultRequest'), require('rest/interceptor/errorCode'), require('ramda'), require('through2')) : typeof define === 'function' && define.amd ? define(['exports', 's3', 'q', 'rest', 'rest/interceptor/pathPrefix', 'rest/interceptor/mime', 'rest/interceptor/defaultRequest', 'rest/interceptor/errorCode', 'ramda', 'through2'], factory) : factory(global.index.js = {}, global.s3, global.Q, global.rest, global.pathPrefix, global.mime, global.defaultRequest, global.errorCode, global.R, global.through);
-})(this, function (exports, s3, Q, rest, pathPrefix, mime, defaultRequest, errorCode, R, through) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('s3'), require('q'), require('rest'), require('rest/interceptor/pathPrefix'), require('rest/interceptor/mime'), require('rest/interceptor/defaultRequest'), require('rest/interceptor/errorCode'), require('ramda'), require('through2'), require('path'), require('gulp-util')) : typeof define === 'function' && define.amd ? define(['exports', 's3', 'q', 'rest', 'rest/interceptor/pathPrefix', 'rest/interceptor/mime', 'rest/interceptor/defaultRequest', 'rest/interceptor/errorCode', 'ramda', 'through2', 'path', 'gulp-util'], factory) : factory(global.index.js = {}, global.s3, global.Q, global.rest, global.pathPrefix, global.mime, global.defaultRequest, global.errorCode, global.R, global.through, global.path, global.gulp_util);
+})(this, function (exports, s3, Q, rest, pathPrefix, mime, defaultRequest, errorCode, R, through, path, gulp_util) {
   'use strict';
 
   Q = 'default' in Q ? Q['default'] : Q;
@@ -17,6 +19,7 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
   errorCode = 'default' in errorCode ? errorCode['default'] : errorCode;
   R = 'default' in R ? R['default'] : R;
   through = 'default' in through ? through['default'] : through;
+  path = 'default' in path ? path['default'] : path;
 
   var Source = (function () {
     function Source(file, release, config) {
@@ -210,17 +213,57 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 
   exports.AppHandler = AppHandler;
 
-  function edoolsApps(config) {
-    return through.obj(function (file, enc, cb) {
-      AppHandler.deploy(config, [file]).then(function () {
-        return cb(null, file);
-      })['catch'](function (err) {
-        throw err;
-      });
-    });
-  }
+  var AppStream = (function () {
+    function AppStream() {
+      _classCallCheck(this, AppStream);
+    }
 
-  exports.AppStream = edoolsApps;
+    _createClass(AppStream, null, [{
+      key: 'deploy',
+      value: function deploy(config) {
+        return through.obj(function (file, enc, cb) {
+          AppHandler.deploy(config, [file]).then(function () {
+            return cb(null, file);
+          })['catch'](function (err) {
+            throw err;
+          });
+        });
+      }
+    }, {
+      key: 'config',
+      value: function config(manifest) {
+        var latestFile = undefined;
+        return through.obj(function (file, enc, cb) {
+          var _file$relative$split = file.relative.split('.');
+
+          var _file$relative$split2 = _slicedToArray(_file$relative$split, 2);
+
+          var prop = _file$relative$split2[0];
+          var extension = _file$relative$split2[1];
+
+          if (extension !== 'json') {
+            throw new gulp_util.PluginError('epm', 'Config file must be a JSON');
+          }
+
+          manifest[prop] = JSON.parse(file.contents.toString());
+          latestFile = file;
+
+          cb();
+        }, function (cb) {
+          var finalFile = latestFile.clone({ contents: false });
+          finalFile.path = path.join(latestFile.base, 'manifest.json');
+          finalFile.contents = new Buffer(JSON.stringify(manifest));
+
+          this.push(finalFile);
+          cb();
+        });
+      }
+    }]);
+
+    return AppStream;
+  })();
+
+  exports.AppStream = AppStream;
 
   var Theme = (function () {
     function Theme(config) {

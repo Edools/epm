@@ -1,6 +1,6 @@
 {
   "name": "@edools/epm",
-  "version": "0.2.1",
+  "version": "0.4.0",
   "description": "Edools apps management tool",
   "repository": "https://github.com/Edools/epm.git",
   "main": "dist/index.js",
@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "babel-runtime": "^5.6.15",
+    "gulp-util": "^3.0.6",
     "q": "^1.4.0",
     "ramda": "^0.14.0",
     "rest": "^1.3.1",
