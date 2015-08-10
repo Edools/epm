@@ -1,5 +1,5 @@
 import through from 'through2';
-import path from 'path';
+import File from 'vinyl';
 import {PluginError} from 'gulp-util';
 import AppHandler from './handler';
 
@@ -15,7 +15,6 @@ export default class AppStream {
   }
 
   static config (manifest) {
-    let latestFile;
     return through.obj(
       function (file, enc, cb) {
         let [prop, extension] = file.relative.split('.');
@@ -24,19 +23,13 @@ export default class AppStream {
         }
 
         manifest[prop] = JSON.parse(file.contents.toString());
-        latestFile = file;
-
         cb();
       },
       function (cb) {
-        if(latestFile) {
-          let finalFile = latestFile.clone({contents: false});
-          finalFile.path = path.join(latestFile.base, 'manifest.json');
-          finalFile.contents = new Buffer(JSON.stringify(manifest));
-
-          this.push(finalFile);
-        }
-
+        this.push(new File({
+          path: 'manifest.json',
+          contents: new Buffer(JSON.stringify(manifest))
+        }));
         cb();
       }
     );
