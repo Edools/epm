@@ -250,11 +250,14 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 
           cb();
         }, function (cb) {
-          var finalFile = latestFile.clone({ contents: false });
-          finalFile.path = path.join(latestFile.base, 'manifest.json');
-          finalFile.contents = new Buffer(JSON.stringify(manifest));
+          if (latestFile) {
+            var finalFile = latestFile.clone({ contents: false });
+            finalFile.path = path.join(latestFile.base, 'manifest.json');
+            finalFile.contents = new Buffer(JSON.stringify(manifest));
 
-          this.push(finalFile);
+            this.push(finalFile);
+          }
+
           cb();
         });
       }

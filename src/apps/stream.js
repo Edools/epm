@@ -29,11 +29,14 @@ export default class AppStream {
         cb();
       },
       function (cb) {
-        let finalFile = latestFile.clone({contents: false});
-        finalFile.path = path.join(latestFile.base, 'manifest.json');
-        finalFile.contents = new Buffer(JSON.stringify(manifest));
+        if(latestFile) {
+          let finalFile = latestFile.clone({contents: false});
+          finalFile.path = path.join(latestFile.base, 'manifest.json');
+          finalFile.contents = new Buffer(JSON.stringify(manifest));
 
-        this.push(finalFile);
+          this.push(finalFile);
+        }
+
         cb();
       }
     );
